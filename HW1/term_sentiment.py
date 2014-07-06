@@ -42,7 +42,7 @@ def calculate_sentiment(sent_scores, tweets):
 def get_score(sent_scores, word):
     score = 0;
     if word.lower() in sent_scores:
-        score = sent_scores[word.lower]
+        score = sent_scores[word.lower()]
 
     return score
 
@@ -50,13 +50,14 @@ def get_score(sent_scores, word):
 def get_adjacent_scores(sent_scores, words, index):
     adjacents = [0, 0]
 
-    if index == 0:  # first element
-        adjacents[0] = get_score(sent_scores, words[1])
-    if index == (len(words) - 1):  # last element
-        adjacents[1] = get_score(sent_scores, words[index - 1])
-    else:
-        adjacents[0] = get_score(sent_scores, words[index - 1])
-        adjacents[1] = get_score(sent_scores, words[index + 1])
+    if len(words) > 1:
+        if index == 0:  # first element
+            adjacents[0] = get_score(sent_scores, words[1])
+        if index == (len(words) - 1):  # last element
+            adjacents[1] = get_score(sent_scores, words[index - 1])
+        else:
+            adjacents[0] = get_score(sent_scores, words[index - 1])
+            adjacents[1] = get_score(sent_scores, words[index + 1])
 
     return adjacents
 
@@ -92,8 +93,10 @@ def main():
     sent_scores = parse_sent_file(sent_file)
     tweets = load_twitter_data(tweet_file)
     scores = calculate_sentiment(sent_scores, tweets)
-    findTermSentiment(sent_scores, scores)
+    new_terms = findTermSentiment(sent_scores, scores)
 
+    for term in new_terms:
+        print u"{0} {1}".format(term, new_terms[term])
 
 if __name__ == '__main__':
     main()
