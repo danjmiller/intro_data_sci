@@ -32,8 +32,8 @@ def calculate_sentiment(sent_scores, tweets):
         words = tweet.split(" ")
 
         for word in words:
-            if sent_scores.has_key(word.lower):
-                score += sent_scores[word.lower]
+            if sent_scores.has_key(word.lower()):
+                score += sent_scores[word.lower()]
 
         scores.append(score)
 
