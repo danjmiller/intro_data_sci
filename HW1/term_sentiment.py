@@ -23,7 +23,7 @@ def load_twitter_data(tweet_file):
 
     return tweets
 
-
+#calculate the sentiment of a tweet
 def calculate_sentiment(sent_scores, tweets):
     scores = []
     for tweet in tweets:
@@ -38,7 +38,7 @@ def calculate_sentiment(sent_scores, tweets):
 
     return scores
 
-
+#helper function that will return 0 if a term isn't known
 def get_score(sent_scores, word):
     score = 0;
     if word.lower() in sent_scores:
@@ -46,23 +46,11 @@ def get_score(sent_scores, word):
 
     return score
 
-# This method will return the sentiment scores of the words adjacent to the target word, or 0 if they aren't scored
-def get_adjacent_scores(sent_scores, words, index):
-    adjacents = [0, 0]
-
-    if len(words) > 1:
-        if index == 0:  # first element
-            adjacents[0] = get_score(sent_scores, words[1])
-        if index == (len(words) - 1):  # last element
-            adjacents[1] = get_score(sent_scores, words[index - 1])
-        else:
-            adjacents[0] = get_score(sent_scores, words[index - 1])
-            adjacents[1] = get_score(sent_scores, words[index + 1])
-
-    return adjacents
-
-
+# I'm using a very simple algorithm
+# if a term has no score, for every positive tweet it is in, increment a counter, for every negative, decrement
+# once this is done for all the tweets, each score is averaged by the number of tweets it appeared in
 def findTermSentiment(sent_scores, scored_tweets):
+    # the structure of new_terms will be:  {'term', [score, count]}
     new_terms = {}
 
     for tweet in scored_tweets:
@@ -73,16 +61,14 @@ def findTermSentiment(sent_scores, scored_tweets):
 
             if get_score(sent_scores, word) == 0:  # This term is un-scored, try to calculate a sentiment
                 if word not in new_terms:
-                    new_terms[word] = 0
+                    new_terms[word] = [0,0] # use a list to represent (score, # of tweets seen in)
 
-                # get the scores for the words adjacent to the word
-                adjacent = get_adjacent_scores(sent_scores, words, word_index)
-
-                if adjacent[0] > 0 and adjacent[1] > 0 and tweet[1] > 0:
-                    new_terms[word] += 1
-                elif adjacent[0] < 0 and adjacent[1] < 0 and tweet[1] < 0:
-                    new_terms[word] -= 1
-
+                (new_terms[word])[1] += 1 # increment the count because this term has been seen in a tweet
+                if tweet[1] > 0:
+                    (new_terms[word])[0] += 1
+                elif tweet[1] < 0:
+                    (new_terms[word])[0] -= 1
+                # if the tweet's score is == 0, do nothing
     return new_terms
 
 
@@ -96,7 +82,9 @@ def main():
     new_terms = findTermSentiment(sent_scores, scores)
 
     for term in new_terms:
-        print u"{0} {1}".format(term, new_terms[term])
+        # Take the average of the score/#tweets here
+        score = new_terms[term][0] / new_terms[term][1]
+        print u"{0} {1}".format(term,score)
 
 if __name__ == '__main__':
     main()
