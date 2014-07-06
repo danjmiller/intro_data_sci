@@ -48,8 +48,8 @@ def main():
     tweets = load_twitter_data(tweet_file)
     scores = calculate_sentiment(sent_scores,tweets)
 
-    print "Got %d tweets",len(tweets)
-    print scores
+    for score in scores:
+        print str(score)
 
 if __name__ == '__main__':
     main()
