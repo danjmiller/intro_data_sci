@@ -37,6 +37,8 @@ def calculate_sentiment(sent_scores, tweets):
 
         scores.append(score)
 
+    return scores
+
 
 def main():
     sent_file = open(sys.argv[1])
@@ -44,6 +46,7 @@ def main():
 
     sent_scores = parse_sent_file(sent_file)
     tweets = load_twitter_data(tweet_file)
+    scores = calculate_sentiment(sent_scores,tweets)
 
     print "Got %d tweets",len(tweets)
     print scores
