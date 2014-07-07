@@ -14,14 +14,14 @@ def load_twitter_data(tweet_file):
 
 def calculate_term_freq(tweets):
     counts = {}
-    total_terms = 0;
+    total_terms = 0
 
     for tweet in tweets:
         words = tweet.split(" ")
         total_terms += len(words)
 
         for word in words:
-            word = word.replace("\n"," ")
+            word = word.replace("\n"," ")  # Need to do this because the newlines in some tweets messed up printing
             if word.lower() not in counts:
                 counts[word.lower()] = 1
             else:
@@ -41,8 +41,7 @@ def main():
     freqs = calculate_term_freq(tweets)
 
     for term in freqs:
-        if term[0] is not "":
-            print u"{:s} {:03.4f}".format(term[0].strip(), term[1])
+        print u"{:s} {:03.4f}".format(term[0].strip(), term[1])
 
 
 
