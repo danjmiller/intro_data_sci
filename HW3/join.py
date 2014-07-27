@@ -17,11 +17,21 @@ def mapper(record):
 
 def reducer(key, list_of_values):
     # key: order id
-    # value: list of columns
-    total = 0
-    for v in list_of_values:
-        total += v
-    mr.emit((key, total))
+    # value: columns from order and line item tables
+
+    orders = []
+    line_items = []
+
+    for cols in list_of_values:
+        if cols[0] == "order":
+            orders.append(cols)
+        else:
+            line_items.append(cols)
+
+    for order in orders:
+        for line_item in line_items:
+            mr.emit(order + line_item)
+
 
 # Do not modify below this line
 # =============================
