@@ -1,0 +1,2 @@
+Q6:
+I found this very useful: http://importantfish.com/one-step-matrix-multiplication-with-hadoop/
